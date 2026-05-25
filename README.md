@@ -19,7 +19,7 @@ The project is currently in progress. At this stage, it includes an ingestion st
 ## Features
 
 - External API data ingestion scripts
-- Historical data backfill script
+- Initial historical backfill script structure for loading past market data
 - Streaming data collection script
 - Initial Cloud Run Job structure prepared for future analytical processing
 - BigQuery SQL scripts for raw-to-curated data transformation
@@ -32,12 +32,13 @@ The repository contains an `ingestion_stack` module with application code, SQL s
 
 - `ingestion_stack/app/bq_scripts` - BigQuery SQL scripts for data transformation and validation
 - `ingestion_stack/app/cloud_run_job_scripts` - initial Cloud Run Job structure with Dockerfile and placeholder Python entry point
-- `ingestion_stack/app/vm_scripts` - Python scripts for data backfill and streaming ingestion
+- `ingestion_stack/app/vm_scripts` - Python scripts for data ingestion, including initial backfill and streaming components
 - `ingestion_stack/scripts` - startup script template for VM configuration
 - `ingestion_stack/terraform` - Terraform configuration for GCP resources
 
 ## Planned development
 
+- Complete and validate the historical backfill script
 - Implement analytical processing in the Cloud Run Job
 - Prepare final datasets for reporting and analysis
 - Add selected statistical and market structure calculations
