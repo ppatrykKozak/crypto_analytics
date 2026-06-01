@@ -7,8 +7,12 @@ resource "google_pubsub_subscription" "market_klines_raw_bq" {
   topic = google_pubsub_topic.market_klines_raw.id
 
   bigquery_config {
-    table          = "${var.project_id}.${google_bigquery_dataset.raw.dataset_id}.market_klines"
+    table          = "${var.project_id}.${google_bigquery_dataset.bronze.dataset_id}.market_klines"
     write_metadata = true
   }
   ack_deadline_seconds = 30
+
+  expiration_policy {
+    ttl = ""
+  }
 }

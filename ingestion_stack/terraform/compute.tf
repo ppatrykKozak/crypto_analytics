@@ -39,7 +39,7 @@ resource "google_compute_instance" "vm-fetcher-2-0" {
 
   metadata = {
     enable-osconfig = "TRUE"
-    startup-script  = templatefile("${path.module}/../scripts/startup.sh.tpl", {
+    startup-script = templatefile("${path.module}/../scripts/startup.sh.tpl", {
       streamer_py = local.streamer_py
       backfill_py = local.backfill_py
       project_id  = var.project_id
@@ -67,7 +67,7 @@ resource "google_compute_instance" "vm-fetcher-2-0" {
   }
 
   service_account {
-    email  = google_service_account.vm_fetcher_sa.email
+    email = google_service_account.vm_fetcher_sa.email
     scopes = [
       "https://www.googleapis.com/auth/devstorage.read_only",
       "https://www.googleapis.com/auth/logging.write",

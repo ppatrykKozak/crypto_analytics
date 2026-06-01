@@ -3,7 +3,7 @@ resource "google_cloud_run_v2_job" "smart_money_job" {
   location = var.region
 
 
-template {
+  template {
     template {
       containers {
         image = "${var.region}-docker.pkg.dev/${var.project_id}/smart-money-jobs/smart-money-job:latest"

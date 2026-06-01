@@ -1,27 +1,34 @@
-# Datasets
+# Medallion Architecture datasets
 
-resource "google_bigquery_dataset" "raw" {
-  project      = var.project_id
-  dataset_id   = "raw"
-  description  = "Raw layer for ingested market data"
-  location     = var.region
+resource "google_bigquery_dataset" "bronze" {
+  project     = var.project_id
+  dataset_id  = "bronze"
+  description = "Bronze layer for raw ingested market data"
+  location    = var.region
 }
 
-resource "google_bigquery_dataset" "curated" {
-  project      = var.project_id
-  dataset_id   = "curated"
-  description  = "Curated layer for ingested market data"
-  location     = var.region
+resource "google_bigquery_dataset" "silver" {
+  project     = var.project_id
+  dataset_id  = "silver"
+  description = "Silver layer for cleaned and structured market data"
+  location    = var.region
+}
+
+resource "google_bigquery_dataset" "gold" {
+  project     = var.project_id
+  dataset_id  = "gold"
+  description = "Gold layer for analytical market data"
+  location    = var.region
 }
 
 # Tables
 
-resource "google_bigquery_table" "raw_market_klines" {
+resource "google_bigquery_table" "bronze_market_klines" {
   project    = var.project_id
-  dataset_id = google_bigquery_dataset.raw.dataset_id
+  dataset_id = google_bigquery_dataset.bronze.dataset_id
   table_id   = "market_klines"
 
-  description = "Raw market kline messages from Pub/Sub subscription"
+  description = "Bronze market kline messages from Pub/Sub subscription"
 
   deletion_protection = false
 
@@ -60,37 +67,37 @@ resource "google_bigquery_table" "raw_market_klines" {
 }
 
 # Scheduled quey
-resource "google_bigquery_data_transfer_config" "raw_to_curated" {
+
+resource "google_bigquery_data_transfer_config" "bronze_to_silver" {
   project                = var.project_id
-  display_name           = "raw_to_curated_hourly"
+  display_name           = "bronze_to_silver_hourly"
   location               = var.region
   data_source_id         = "scheduled_query"
-  destination_dataset_id = google_bigquery_dataset.curated.dataset_id
-  schedule = "every 1 hours"
-  schedule_options {
-    start_time = "2026-05-16T12:01:00Z"
-  }
-  service_account_name = google_service_account.bq_schedule_sa.email
+  destination_dataset_id = google_bigquery_dataset.silver.dataset_id
+  schedule               = "every 1 hours"
 
+  #schedule_options {
+  # start_time = "2026-05-31T21:00:00Z"
+  # }
+
+  service_account_name = google_service_account.bq_schedule_sa.email
   params = {
     destination_table_name_template = "market_klines"
-
-    write_disposition = "WRITE_TRUNCATE"
-
-    query = file("${path.module}/../app/bq_scripts/raw_to_curated.sql")
+    write_disposition               = "WRITE_TRUNCATE"
+    query                           = file("${path.module}/../app/bq_scripts/bronze_to_silver.sql")
   }
 }
 
-# view
+# View
 
-resource "google_bigquery_table" "missing_klines" {
-  dataset_id = google_bigquery_dataset.curated.dataset_id
+resource "google_bigquery_table" "silver_missing_klines" {
+  dataset_id = google_bigquery_dataset.silver.dataset_id
   table_id   = "vw_missing_klines"
 
   deletion_protection = false
 
   view {
-    query          = file("${path.module}/../app/bq_scripts/vw_missing_klines.sql")
+    query          = file("${path.module}/../app/bq_scripts/vw_missing_klines_silver.sql")
     use_legacy_sql = false
   }
 }

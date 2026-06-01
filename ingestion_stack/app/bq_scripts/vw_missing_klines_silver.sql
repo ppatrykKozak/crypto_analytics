@@ -21,7 +21,7 @@ WITH
       c.dt,
       k.kline_start_time IS NOT NULL AS has_data
     FROM calendar c
-    LEFT JOIN `project-935c4c53-b5cb-48f2-824.curated.market_klines` AS k
+    LEFT JOIN `project-935c4c53-b5cb-48f2-824.silver.market_klines` AS k
       ON k.kline_start_time = c.dt
   ),
   gaps AS (

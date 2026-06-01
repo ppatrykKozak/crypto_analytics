@@ -1,8 +1,9 @@
 # TODO: implement script to backfill missing data.
-# Use vw_missing_klines.sql to defining missing range
-# Create a mechanism to trigger this script on vm
-# No need for schedule, only manual triggers
-# Current version writes to BQ hardcoded date range
+# Use silver.vw_missing_klines to define missing ranges.
+# Backfill writes historical Binance klines into bronze.market_klines.
+# Create a mechanism to trigger this script on VM.
+# No need for schedule, only manual triggers.
+# Current version writes to BQ hardcoded date range.
 
 import json
 import os
@@ -16,7 +17,7 @@ symbol = "btcusdc"
 interval = "1h"
 
 PROJECT_ID = os.getenv("PROJECT_ID")
-DATASET = "raw"
+DATASET = "bronze"
 TABLE = "market_klines"
 LOG_FILE = "/var/log/kline/kline_backfill.log"
 

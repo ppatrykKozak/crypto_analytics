@@ -1,5 +1,5 @@
 /*
-Description: Script used for cleaning raw data and uploading into curated layer
+Description: Script used for cleaning bronze data and uploading into silver layer
 
 TODO: Adjust after backfill implemetation if needed
 */
@@ -28,7 +28,7 @@ SELECT
   CAST(JSON_VALUE(DATA, '$.Q') AS FLOAT64) AS taker_buy_quote_asset_volume,
   CAST(JSON_VALUE(DATA, '$.B') AS INT64) AS ignore_value,
 FROM
-  `project-935c4c53-b5cb-48f2-824.raw.market_klines`
+  `project-935c4c53-b5cb-48f2-824.bronze.market_klines`
 WHERE JSON_VALUE(DATA, '$.i') IN ("1h", "2h")
 AND JSON_VALUE(attributes, '$.ingestion_type') = "websocket"
 
@@ -58,6 +58,6 @@ SELECT
   CAST(JSON_VALUE_ARRAY(DATA)[10] AS FLOAT64) AS taker_buy_quote_asset_volume,
   CAST(JSON_VALUE_ARRAY(DATA)[11] AS FLOAT64) ignore_value
 FROM
-  `project-935c4c53-b5cb-48f2-824.raw.market_klines`
+  `project-935c4c53-b5cb-48f2-824.bronze.market_klines`
 WHERE
   JSON_VALUE(attributes, '$.ingestion_type') = "backfill"
